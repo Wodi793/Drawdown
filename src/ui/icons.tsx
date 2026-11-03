@@ -1,11 +1,10 @@
-/** Circled V60: ring, cone, lip, rib, drop. */
+/** Circled V60: ring, lip, cone, drop. Solid shapes so it holds up at 20 px. */
 export const Logo = ({ class: cls = "logo" }: { class?: string }) => (
-  <svg class={cls} viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="32" cy="32" r="28" stroke-width="3.2" />
-    <line x1="14" y1="21" x2="50" y2="21" stroke-width="3.2" />
-    <path d="M18 21 L46 21 L34.5 41 L29.5 41 Z" stroke-width="3.2" />
-    <path d="M32 25 L32 37" stroke-width="2" opacity=".6" />
-    <path d="M32 45 Q35 49 32 51 Q29 49 32 45 Z" fill="currentColor" stroke="none" />
+  <svg class={cls} viewBox="0 0 64 64" aria-hidden="true" fill="currentColor">
+    <circle cx="32" cy="32" r="28.6" fill="none" stroke="currentColor" stroke-width="4" />
+    <rect x="13" y="17.2" width="38" height="5" rx="2.5" />
+    <path d="M16.8 21.6 H47.2 L36.3 41.6 Q35.6 42.8 34.2 42.8 H29.8 Q28.4 42.8 27.7 41.6 Z" />
+    <path d="M32 46.4 C34.9 49.9 35.6 51.8 35.6 53 A3.6 3.6 0 0 1 28.4 53 C28.4 51.8 29.1 49.9 32 46.4 Z" />
   </svg>
 );
 
