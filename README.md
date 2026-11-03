@@ -4,7 +4,7 @@ A pour-over coffee coach for one setup: Hario V60 02, Fellow Ode Gen 2, Third Wa
 It times and speaks each pour, records the drawdown, asks how the cup tasted, and suggests
 one change for next time. Each coffee bag keeps its own recipe and brew log.
 
-**Live app:** https://wodi793.github.io/drawdown/ (install it: open in Safari → Share → Add to Home Screen)
+**Live app:** https://wodi793.github.io/Drawdown/ (install it: open in Safari → Share → Add to Home Screen)
 
 ## Where your data lives
 
