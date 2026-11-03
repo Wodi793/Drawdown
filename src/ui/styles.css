@@ -57,8 +57,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, label.btn:foc
 
 .app { height: 100%; display: flex; flex-direction: column; background: var(--bg);
   /* room for the pinned bands; App.tsx measures them */
-  padding-top: var(--hdr); padding-bottom: env(safe-area-inset-bottom, 0px); --abt: 10px; --abb: 13px; }
-body::after { content: ""; position: fixed; inset: auto 0 0; height: env(safe-area-inset-bottom, 0px); z-index: 10; background: var(--band); }
+  padding-top: var(--hdr); --abt: 10px; --abb: 13px; }
+/* Installed (home-screen) app: iOS draws the app from the top of the screen but reports a viewport
+   short by the status bar, leaving a strip at the bottom (upright) or the clock side (sideways).
+   Size to the full screen instead; 100lvh / 100lvw reach the true edges (measured on the owner's
+   foldable for the Penguins app: 951 pt vs 927 pt reported). */
+@media (display-mode: standalone) {
+  .app { height: 100lvh; width: 100lvw; }
+  .appbar { right: auto; width: 100lvw; }
+}
 
 /* ---------- top band ---------- */
 .appbar { position: fixed; top: 0; left: 0; right: 0; z-index: 5; background: var(--yellow); color: var(--onyellow);
@@ -202,9 +209,9 @@ textarea::placeholder, input::placeholder { color: var(--label3); }
 
 /* ---------- bottom band ---------- */
 /* The tab bar sits at the end of the page (not pinned): this is the arrangement Safari carries
-   to the bottom edge. The strip under it, behind the home indicator, is painted by body::after. */
+   to the bottom edge. It runs under the home indicator by padding itself with the bottom safe area. */
 .tabbar { flex: none; position: relative; z-index: 5; background: var(--band); color: var(--onband);
-  padding: 3px var(--gr) 3px var(--gl); display: flex; justify-content: center; }
+  padding: 3px var(--gr) calc(3px + env(safe-area-inset-bottom, 0px)) var(--gl); display: flex; justify-content: center; }
 .tabbar .in { display: flex; width: 100%; max-width: 560px; }
 .tabbar button { flex: 1; border: 0; background: transparent; color: var(--onband); opacity: .62; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 7px 0; }
 .tabbar svg { width: 20px; height: 20px; }
