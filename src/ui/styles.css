@@ -11,49 +11,53 @@
   color-scheme: light;
   --bg: #efe8d4; --surface: #f8f3e5; --label: #16161a; --label2: rgba(22,22,26,.64); --label3: rgba(22,22,26,.3);
   --sep: rgba(22,22,26,.13); --fill: rgba(22,22,26,.07); --fill2: rgba(22,22,26,.12);
-  --yellow: #ffe03b; --onyellow: #141317;
+  --yellow: #ffdc00; --onyellow: #141317;
   --stick: #ee8b80; --stickInk: #1b1719; --tint: #ee8b80; --tint-ink: #b23e33;
   --band: #2e2fd4; --onband: #f8f3e5; --green: #17804a; --orange: #a35d00; --red: #c03024; --knob: #f8f3e5;
   --display: "Comfortaa", "Avenir Next", system-ui, sans-serif;
   --sys: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
+  --hdr: 96px; --tab: 40px;
   --gl: max(16px, env(safe-area-inset-left, 0px)); --gr: max(16px, env(safe-area-inset-right, 0px));
 }
+@supports (color: color(display-p3 1 1 1)) { :root {
+  --yellow: color(display-p3 1 0.86 0.05);
+} }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   color-scheme: dark;
   --bg: #111216; --surface: #1b1c22; --label: #f3edda; --label2: rgba(243,237,218,.66); --label3: rgba(243,237,218,.3);
   --sep: rgba(243,237,218,.13); --fill: rgba(243,237,218,.08); --fill2: rgba(243,237,218,.14);
   --stick: #ef8c81; --tint: #ef8c81; --tint-ink: #ef8c81;
-  --band: #3de38a; --onband: #111216; --green: #3de38a; --orange: #f0a640; --red: #ff6b5e; --knob: #22232a;
+  --band: #22e57d; --onband: #0d0e11; --green: #3de38a; --orange: #f0a640; --red: #ff6b5e; --knob: #22232a;
 } }
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #111216; --surface: #1b1c22; --label: #f3edda; --label2: rgba(243,237,218,.66); --label3: rgba(243,237,218,.3);
   --sep: rgba(243,237,218,.13); --fill: rgba(243,237,218,.08); --fill2: rgba(243,237,218,.14);
   --stick: #ef8c81; --tint: #ef8c81; --tint-ink: #ef8c81;
-  --band: #3de38a; --onband: #111216; --green: #3de38a; --orange: #f0a640; --red: #ff6b5e; --knob: #22232a;
+  --band: #22e57d; --onband: #0d0e11; --green: #3de38a; --orange: #f0a640; --red: #ff6b5e; --knob: #22232a;
 }
 
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 html, body, #root { height: 100%; margin: 0; }
-/* Safari tints the status-bar area from the page background and fades it over the content.
-   Make that background the lemon band so the top reads as one solid strip. The app itself
-   paints the theme background below the band. */
-html { background: var(--yellow); }
-body { background: var(--yellow); color: var(--label); font-family: var(--sys); font-size: 16px; line-height: 1.3;
+/* The lemon band and the tab bar are pinned to the screen edges (position: fixed) and run under
+   the status bar and home indicator. Safari takes its edge tint from pinned bars like these.
+   The page background stays the theme color, so any area Safari keeps for itself matches the content. */
+html { background: var(--bg); }
+body { background: var(--bg); color: var(--label); font-family: var(--sys); font-size: 16px; line-height: 1.3;
   -webkit-font-smoothing: antialiased; overflow: hidden; -webkit-text-size-adjust: 100%; }
 /* Paint the notch and home-indicator areas in the band colors. */
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: calc(env(safe-area-inset-top, 0px) + 2px); z-index: 10; background: var(--yellow); }
-body::after { content: ""; position: fixed; inset: auto 0 0; height: calc(env(safe-area-inset-bottom, 0px) + 2px); z-index: 10; background: var(--band); }
 button { font-family: inherit; cursor: pointer; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, label.btn:focus-within, [tabindex]:focus-visible { outline: 3px solid var(--band); outline-offset: 2px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .app { height: 100%; display: flex; flex-direction: column; background: var(--bg);
-  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  /* room for the pinned bands; App.tsx measures them */
+  padding-top: var(--hdr); padding-bottom: var(--tab); --abt: 10px; --abb: 13px; }
 
 /* ---------- top band ---------- */
-.appbar { flex: none; position: sticky; top: 0; background: var(--yellow); color: var(--onyellow); padding: 10px var(--gr) 13px var(--gl); }
+.appbar { position: fixed; top: 0; left: 0; right: 0; z-index: 5; background: var(--yellow); color: var(--onyellow);
+  padding: calc(env(safe-area-inset-top, 0px) + var(--abt)) var(--gr) var(--abb) var(--gl); }
 .appbar .in { display: flex; flex-direction: column; gap: 10px; }
 .row1 { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .mark { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; letter-spacing: -.01em; margin: 0; }
@@ -192,20 +196,21 @@ textarea::placeholder, input::placeholder { color: var(--label3); }
 .back { border: 0; background: transparent; color: var(--label); font-weight: 700; font-size: 16px; padding: 4px 0; align-self: flex-start; }
 
 /* ---------- bottom band ---------- */
-.tabbar { flex: none; position: sticky; bottom: 0; background: var(--band); color: var(--onband); padding: 3px var(--gr) 3px var(--gl); display: flex; justify-content: center; }
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 5; background: var(--band); color: var(--onband);
+  padding: 3px var(--gr) calc(3px + env(safe-area-inset-bottom, 0px)) var(--gl); display: flex; justify-content: center; }
 .tabbar .in { display: flex; width: 100%; max-width: 560px; }
 .tabbar button { flex: 1; border: 0; background: transparent; color: var(--onband); opacity: .62; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 7px 0; }
 .tabbar svg { width: 20px; height: 20px; }
 .tabbar button[aria-current="page"] { opacity: 1; }
 .tabbar button:focus-visible { outline-color: var(--onband); }
-.toast { position: fixed; left: 50%; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--label); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 600; z-index: 9; max-width: calc(100% - 32px); text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(var(--tab) + 14px); transform: translateX(-50%); background: var(--label); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 600; z-index: 9; max-width: calc(100% - 32px); text-align: center; }
 
 /* small phones */
 @media (max-width: 370px) { .mark { font-size: 26px; } .logo { width: 26px; height: 26px; } .stats dd { font-size: 15px; } .pill { font-size: 17px; } }
 
 /* big screens (unfolded, either orientation): larger type */
 .app.big { font-size: 18px; }
-.app.big .appbar { padding-block: 14px 16px; }
+.app.big { --abt: 14px; --abb: 16px; }
 .app.big .mark { font-size: 44px; gap: 12px; }
 .app.big .logo { width: 42px; height: 42px; }
 .app.big .kit { font-size: 15px; padding: 4px 12px; }
@@ -220,7 +225,7 @@ textarea::placeholder, input::placeholder { color: var(--label3); }
 .app.big .page, .app.big .fb { max-width: 620px; }
 
 /* wide landscape: one-line header, ring left with buttons beside it, recipe right */
-.app.wide .appbar { padding-block: 10px; }
+.app.wide { --abt: 10px; --abb: 10px; }
 .app.wide .appbar .in { flex-direction: row; align-items: center; gap: 24px; }
 .app.wide .row1 { display: contents; }
 .app.wide .mark { font-size: 38px; order: 1; }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { grindLabel } from "../core/grind";
 import { METHODS } from "../core/rules";
 import { current, useStore } from "../data/store";
@@ -47,12 +47,27 @@ export function App() {
     if (location.hash !== `#${t}`) history.replaceState(null, "", `#${t}`);
   };
 
+  // The bands are pinned to the screen edges; keep the content clear of them.
+  const appRef = useRef<HTMLDivElement>(null), hdrRef = useRef<HTMLElement>(null), tabRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const app = appRef.current, hdr = hdrRef.current, tab = tabRef.current;
+    if (!app || !hdr || !tab) return;
+    const f = () => {
+      app.style.setProperty("--hdr", `${hdr.offsetHeight}px`);
+      app.style.setProperty("--tab", `${tab.offsetHeight}px`);
+    };
+    f();
+    const ro = new ResizeObserver(f);
+    ro.observe(hdr); ro.observe(tab);
+    return () => ro.disconnect();
+  }, [s.ready, wide, big]);
+
   if (!s.ready) return <div class="app" />;
   const { R } = current(s);
 
   return (
-    <div class={`app${wide ? " wide" : ""}${big ? " big" : ""}`}>
-      <header class="appbar">
+    <div ref={appRef} class={`app${wide ? " wide" : ""}${big ? " big" : ""}`}>
+      <header class="appbar" ref={hdrRef}>
         <div class="in">
           <div class="row1">
             <h1 class="mark"><Logo />drawdown</h1>
@@ -74,7 +89,7 @@ export function App() {
         {shown === "bags" && <Bags key={bagsKey} onBrew={() => go("brew")} />}
       </main>
 
-      <nav class="tabbar" aria-label="Sections">
+      <nav class="tabbar" aria-label="Sections" ref={tabRef}>
         <div class="in">
           <button data-go="brew" aria-current={shown === "brew" ? "page" : undefined} onClick={() => go("brew")}><BrewIcon />Brew</button>
           <button data-go="recipe" aria-current={shown === "recipe" ? "page" : undefined} onClick={() => go("recipe")}><RecipeIcon />Recipe</button>
