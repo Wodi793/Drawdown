@@ -40,11 +40,15 @@
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 html, body, #root { height: 100%; margin: 0; }
-/* The lemon band is pinned to the top edge (position: fixed) and runs under the status bar;
-   Safari takes its top tint from a pinned bar like this.
-   The page background stays the theme color, so any area Safari keeps for itself matches the content. */
-html { background: var(--bg); }
-body { background: var(--bg); color: var(--label); font-family: var(--sys); font-size: 16px; line-height: 1.3;
+/* How Safari colors the strips it keeps for itself (seen on an iPhone, Safari 26):
+   - top: taken from a bar pinned to the top edge, so the lemon band is position: fixed;
+   - bottom, and the clock side in landscape: the page's background color.
+   Upright, the page background is the tab-bar color, so the strip under the tab bar matches it.
+   Sideways, that same color would fill a full-height column by the clock, so it stays the
+   theme background there. The app paints its own background, so none of this shows inside it. */
+html, body { background: var(--band); }
+@media (orientation: landscape) { html, body { background: var(--bg); } }
+body { color: var(--label); font-family: var(--sys); font-size: 16px; line-height: 1.3;
   -webkit-font-smoothing: antialiased; overflow: hidden; -webkit-text-size-adjust: 100%; }
 /* Paint the notch and home-indicator areas in the band colors. */
 button { font-family: inherit; cursor: pointer; }
